@@ -1,32 +1,30 @@
+# -*- mode: nginx -*-
+
 server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-
-        root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-
-        server_name _;
-
-        location / {
-                # First attempt to serve request as file, then
-                # as directory, then fall back to displaying a 404.
-                try_files $uri $uri/ =404;
-        }
-
-        auth_basic "Restricted";
-        auth_basic_user_file /opt/arch/.htpasswd;
-
-        location ~ /git(/.*) {
-		 client_max_body_size   0;
-		 include 		fastcgi_params;
-		 
-                 fastcgi_param          SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
-                 fastcgi_param          GIT_HTTP_EXPORT_ALL     "";
-                 fastcgi_param          GIT_PROJECT_ROOT        /opt/arch/data;
-                 fastcgi_param          PATH_INFO               $1;
-
-                 # Forward REMOTE_USER as we want to know when we are authenticated
-                 fastcgi_param         REMOTE_USER   $remote_user;
-                 fastcgi_pass          unix:/var/run/nginx/fcgiwrap.socket;
-        }
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    
+    server_name _;
+    
+    location / {
+	deny all;
+    }
+    
+    location ~ /git(/.*) {
+	auth_basic "Restricted";
+	auth_basic_user_file /opt/arch/.htpasswd;
+        
+        
+	client_max_body_size   0;
+	include 		fastcgi_params;
+	
+        fastcgi_param          SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
+        fastcgi_param          GIT_HTTP_EXPORT_ALL     "";
+        fastcgi_param          GIT_PROJECT_ROOT        /opt/arch/data;
+        fastcgi_param          PATH_INFO               $1;
+        
+        # Forward REMOTE_USER as we want to know when we are authenticated
+        fastcgi_param         REMOTE_USER   $remote_user;
+        fastcgi_pass          unix:/var/run/nginx/fcgiwrap.socket;
+    }
 }
