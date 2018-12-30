@@ -1,0 +1,32 @@
+* arch-server
+
+** Configuração do servidor
+
+A configuração do servidor foi feita baseada nos seguintes artigos:
+
+https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
+
+
+** Build
+
+#+begin_src bash
+docker build -t calimaborges/arch-server .
+#+end_src
+
+** Run
+
+#+begin_src bash
+docker run -d \
+-p 80:80 \
+--mount type=bind,src=/tmp/arch,target=/opt/arch \
+--restart always \
+calimaborges/arch-server
+#+end_src
+
+** Create git repository
+
+#+begin_src bash
+cd /tmp/arch/data && git init --bare <REPOSITORY_NAME>
+#+end_src
+
