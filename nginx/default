@@ -25,6 +25,6 @@ server {
         
         # Forward REMOTE_USER as we want to know when we are authenticated
         fastcgi_param         REMOTE_USER   $remote_user;
-        fastcgi_pass          unix:/var/run/nginx/fcgiwrap.socket;
+        fastcgi_pass          unix:/var/run/fcgiwrap.socket;
     }
 }
